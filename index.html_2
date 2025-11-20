@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HLS Player com Hash</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<style>
+  body {
+    margin: 0;
+    background: #111;
+    color: #fff;
+    font-family: Arial;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+  }
+
+  video {
+    width: 90%;
+    max-width: 900px;
+    border-radius: 12px;
+    background: #000;
+  }
+
+  .info {
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="info">🎬 HLS Player Premium com Hash</div>
+<video id="video" controls autoplay playsinline></video>
+
+<script>
+  // PEGAR O LINK DO M3U8 DO HASH DA URL
+  let videoUrl = window.location.hash.substring(1);
+
+  if (!videoUrl) {
+      alert("Adicione um link M3U8 após o # na URL.");
+  } else {
+      console.log("Carregando stream:", videoUrl);
+
+      const video = document.getElementById('video');
+
+      if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(videoUrl);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, function () {
+              video.play();
+          });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          // Safari
+          video.src = videoUrl;
+          video.addEventListener('loadedmetadata', () => {
+              video.play();
+          });
+      } else {
+          alert("Seu navegador não suporta HLS!");
+      }
+  }
+</script>
+
+</body>
+</html>
